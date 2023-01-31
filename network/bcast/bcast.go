@@ -34,13 +34,13 @@ func Transmitter(port int, chans ...interface{}) {
 			JSON:   jsonstr,
 		})
 		if len(ttj) > bufSize {
-		    panic(fmt.Sprintf(
-		        "Tried to send a message longer than the buffer size (length: %d, buffer size: %d)\n\t'%s'\n"+
-		        "Either send smaller packets, or go to network/bcast/bcast.go and increase the buffer size",
-		        len(ttj), bufSize, string(ttj)))
+			panic(fmt.Sprintf(
+				"Tried to send a message longer than the buffer size (length: %d, buffer size: %d)\n\t'%s'\n"+
+					"Either send smaller packets, or go to network/bcast/bcast.go and increase the buffer size",
+				len(ttj), bufSize, string(ttj)))
 		}
 		conn.WriteTo(ttj, addr)
-    		
+
 	}
 }
 
@@ -117,13 +117,12 @@ func checkArgs(chans ...interface{}) {
 		elemTypes[i] = elemType
 
 		// Element type must be encodable with JSON
-		checkTypeRecursive(elemType, []int{i+1})
+		checkTypeRecursive(elemType, []int{i + 1})
 
 	}
 }
 
-
-func checkTypeRecursive(val reflect.Type, offsets []int){
+func checkTypeRecursive(val reflect.Type, offsets []int) {
 	switch val.Kind() {
 	case reflect.Complex64, reflect.Complex128, reflect.Chan, reflect.Func, reflect.UnsafePointer:
 		panic(fmt.Sprintf(
