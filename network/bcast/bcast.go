@@ -44,6 +44,29 @@ func Transmitter(port int, chans ...interface{}) {
 	}
 }
 
+func TransmitterSimple(port int, msg chan string) {
+	conn := conn.DialBroadcastUDP(port)
+	addr, _ := net.ResolveUDPAddr("udp4", fmt.Sprintf("255.255.255.255:%d", port))
+	for {
+		str := <-msg
+		conn.WriteTo([]byte(str), addr)
+	}
+}
+
+func ReceiverSimple(port int, msg chan string) {
+	var buf [bufSize]byte
+	conn := conn.DialBroadcastUDP(port)
+	for {
+		_, _, e := conn.ReadFrom(buf[0:])
+		if e != nil {
+			fmt.Printf("bcast.Receiver(%d, ...):ReadFrom() failed: \"%+v\"\n", port, e)
+		}
+		str := string(buf[:])
+		buf = [bufSize]byte{}
+		msg <- str
+	}
+}
+
 // Matches type-tagged JSON received on `port` to element types of `chans`, then
 // sends the decoded value on the corresponding channel
 func Receiver(port int, chans ...interface{}) {
